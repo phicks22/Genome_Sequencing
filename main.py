@@ -1,4 +1,4 @@
-# Algorithms for Coursera course "Genome Sequencing"
+# Algorithms for Coursera course "Genome Sequencing: Bioinformatics II."
 
 def divide(sequence, k):
     """
