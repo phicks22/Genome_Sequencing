@@ -39,6 +39,7 @@ def reconstruct_sequence(kmers_file_path):
 
     # Convert kmers to a 1-dimensional array
     kmers_array = kmers[0]
+    # Initialize the current kmer. The beginning of the sequence will always start with the first entry in the file
     current_kmer = kmers_array[0]
 
     # Initialize output sequence
@@ -46,7 +47,6 @@ def reconstruct_sequence(kmers_file_path):
     for i in kmers_array:
         match_index = dict()
         match_index[i] = len(list(filter(lambda xy: xy[0] == xy[1], zip(current_kmer, i))))
-        print(match_index)
         next_kmer = max(match_index, key=match_index.get)
         kmers_array.remove(i)
         sequence += next_kmer
@@ -55,5 +55,21 @@ def reconstruct_sequence(kmers_file_path):
 
 
 # Example output
-kmers_file_path = "Data/dataset_198_3.txt"
-reconstruct_sequence(kmers_file_path)
+# kmers_file_path = "path/to/data.txt"
+# print(reconstruct_sequence(kmers_file_path))
+
+# The following 9 lines were used to move past a question for genome reconstruction where all that was required was to
+# place one kmer in front of the other. No intuitive thought was required here. The reconstruct_sequence above was my
+# attempt to create a function based on the match indices of each kmer. The course even mentions that the selection of
+# kmers is pretty arbitrary anyway.
+
+# with open(kmers_file_path) as file:
+#     geno_list = [line.strip().split(" ") for line in file.readlines()]
+#     geno_list = geno_list[0]
+#
+# path = ''
+# for i in geno_list[:-1]:
+#     path += i[0]
+#
+# path = path + geno_list[-1]
+# print(path)
