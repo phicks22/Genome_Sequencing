@@ -25,7 +25,7 @@ def divide_sequence(sequence, k):
 # sequence = open("Data/dataset_197_3.txt", "r").read()
 # divide_sequence(sequence, 100)
 
-def reconstruct_sequence(kmers_file_path):
+def reconstruct_sequence(file, prefix_length, error):
     """
     Identifies the
 
@@ -34,42 +34,51 @@ def reconstruct_sequence(kmers_file_path):
     """
 
     # Open and read space-delimited txt file
-    with open(kmers_file_path) as file:
-        kmers = [line.strip().split(" ") for line in file.readlines()]
+    with open(file) as f:
+        kmers = [line.strip().split(" ") for line in f.readlines()]
 
     # Convert kmers to a 1-dimensional array
     kmers_array = kmers[0]
     # Initialize the current kmer. The beginning of the sequence will always start with the first entry in the file
     current_kmer = kmers_array[0]
+    kmer_length = len(current_kmer)
+
+    # Ensure that the prefix length != the kmer length
+    try:
+        assert prefix_length != kmer_length
+    except:
+        print("Prefix length cannot be equal to the kmer length.")
 
     # Initialize output sequence
-    sequence = current_kmer
-    for i in kmers_array:
+    sequence = ''
+    for kmer in kmers_array[1::]:
+        prefix = current_kmer[0:prefix_length]
         match_index = dict()
-        match_index[i] = len(list(filter(lambda xy: xy[0] == xy[1], zip(current_kmer, i))))
+        match_index[kmer] = len(list(filter(
+            lambda xy: xy[0] == xy[1], zip(current_kmer[prefix_length-1::], kmer[0:kmer_length-1]))))
         next_kmer = max(match_index, key=match_index.get)
-        kmers_array.remove(i)
-        sequence += next_kmer
+        kmers_array.remove(kmer)
+        sequence += (prefix + next_kmer)
 
     return sequence
 
 
 # Example output
-# kmers_file_path = "path/to/data.txt"
-# print(reconstruct_sequence(kmers_file_path))
+kmers_file_path = "Data/dataset_198_3.txt"
+print(reconstruct_sequence(file=kmers_file_path, prefix_length=1, error=0))
 
 # The following 9 lines were used to move past a question for genome reconstruction where all that was required was to
 # place one kmer in front of the other. No intuitive thought was required here. The reconstruct_sequence above was my
 # attempt to create a function based on the match indices of each kmer. The course even mentions that the selection of
 # kmers is pretty arbitrary anyway.
 
-# with open(kmers_file_path) as file:
-#     geno_list = [line.strip().split(" ") for line in file.readlines()]
-#     geno_list = geno_list[0]
-#
-# path = ''
-# for i in geno_list[:-1]:
-#     path += i[0]
-#
-# path = path + geno_list[-1]
-# print(path)
+with open(kmers_file_path) as file:
+    geno_list = [line.strip().split(" ") for line in file.readlines()]
+    geno_list = geno_list[0]
+
+path = ''
+for i in geno_list[:-1]:
+    path += i[0]
+
+path = path + geno_list[-1]
+print(path)
